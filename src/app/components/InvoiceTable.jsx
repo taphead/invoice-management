@@ -37,6 +37,23 @@ export default function InvoiceTable() {
     router.push(`edit/${id}`);
   };
 
+  const handleDelete = (id) => {
+    fetch(`/api/invoices/${id}`, {
+      method: "DELETE",
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to delete invoice");
+        }
+        return res.json();
+      })
+      .then(() => {
+        console.log("Invoice deleted:", id);
+        setInvoices((prev) => prev.filter((invoice) => invoice.id !== id));
+      })
+      .catch((err) => console.error("Failed to delete invoice:", err));
+  };
+
   const handleAdd = () => {
     let latestId = invoices[invoices.length - 1].id;
     let lastDigits = parseInt(latestId.slice(-3));
@@ -82,7 +99,7 @@ export default function InvoiceTable() {
                       </a>
                     </Button>
 
-                    <Button onClick={() => handleEdit(i.id)}>
+                    <Button onClick={() => handleDelete(i.id)}>
                       <a>
                         <DeleteIcon />
                       </a>
