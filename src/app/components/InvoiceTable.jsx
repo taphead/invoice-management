@@ -33,6 +33,14 @@ export default function InvoiceTable() {
       .finally(() => setLoading(false));
   }, []);
 
+  const handleAdd = () => {
+    let latestId = invoices[invoices.length - 1].id;
+    let lastDigits = parseInt(latestId.slice(-3));
+    let nextId = String(lastDigits + 1).padStart(3, "0");
+    let nextIdFull = latestId.slice(0, -3) + nextId;
+    router.push(`add/${nextIdFull}`);
+  };
+
   const handleEdit = (id) => {
     router.push(`edit/${id}`);
   };
@@ -54,12 +62,8 @@ export default function InvoiceTable() {
       .catch((err) => console.error("Failed to delete invoice:", err));
   };
 
-  const handleAdd = () => {
-    let latestId = invoices[invoices.length - 1].id;
-    let lastDigits = parseInt(latestId.slice(-3));
-    let nextId = String(lastDigits + 1).padStart(3, "0");
-    let nextIdFull = latestId.slice(0, -3) + nextId;
-    router.push(`add/${nextIdFull}`);
+  const handleView = (id) => {
+    router.push(`view/${id}`);
   };
 
   if (!invoices.length) {
@@ -88,7 +92,7 @@ export default function InvoiceTable() {
                   <TableCell>{i.dueDate}</TableCell>
                   <TableCell>${i.totalAmount}</TableCell>
                   <TableCell>
-                    <Button>
+                    <Button onClick={() => handleView(i.id)}>
                       <a>
                         <PageviewIcon />
                       </a>

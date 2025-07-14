@@ -21,3 +21,13 @@ export async function PUT(req, { params }) {
   invoices[index] = updated;
   return NextResponse.json({ success: true });
 }
+
+export async function GET(_, { params }) {
+  const invoice = invoices.find((inv) => inv.id === params.id);
+
+  if (!invoice) {
+    return new NextResponse("Not found", { status: 404 });
+  }
+
+  return NextResponse.json(invoice);
+}
