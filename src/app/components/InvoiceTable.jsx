@@ -122,9 +122,19 @@ export default function InvoiceTable() {
             margin: "20px",
           }}
         >
-          <Button variant="contained" onClick={() => handleAdd()}>
-            Add New
-          </Button>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <Button variant="contained" onClick={() => handleAdd()}>
+              Add New
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => {
+                router.push("/summary");
+              }}
+            >
+              Summary
+            </Button>
+          </Box>
         </Box>
       </>
     );
