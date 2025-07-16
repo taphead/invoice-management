@@ -8,6 +8,7 @@ import {
   StyleSheet,
 } from "@react-pdf/renderer";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 const styles = StyleSheet.create({
   page: {
@@ -50,10 +51,21 @@ const styles = StyleSheet.create({
 export default function Summary() {
   const [loading, setLoading] = useState(true);
   const [invoices, setInvoices] = useState([]);
+  const searchParams = useSearchParams();
+  const from = searchParams.get("from");
+  const to = searchParams.get("to");
+
+  console.log(from);
   useEffect(() => {
     fetch("/api/invoices")
       .then((res) => res.json())
-      .then((data) => setInvoices(data))
+      .then((data) => {
+        const filtered = data.filter((invoice) => {
+          const invoiceDate = new Date(invoice.invoiceDate);
+          return invoiceDate >= new Date(from) && invoiceDate <= new Date(to);
+        });
+        setInvoices(filtered);
+      })
       .finally(() => setLoading(false));
   }, []);
 

@@ -8,6 +8,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Paper,
   Button,
   Skeleton,
@@ -25,6 +26,14 @@ export default function InvoiceTable() {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
+  const [dates, setDates] = useState({
+    fromDate: new Date().toISOString().split("T")[0],
+    toDate: new Date().toISOString().split("T")[0],
+  });
+  const handleDateChange = (e) => {
+    setDates({ ...dates, [e.target.name]: e.target.value });
+    console.log(dates);
+  };
 
   useEffect(() => {
     fetch("/api/invoices")
@@ -126,10 +135,32 @@ export default function InvoiceTable() {
             <Button variant="contained" onClick={() => handleAdd()}>
               Add New
             </Button>
+
+            <TextField
+              name="fromDate"
+              label="From Date"
+              type="date"
+              InputLabelProps={{ shrink: true }}
+              value={dates.fromDate}
+              onChange={(e) => handleDateChange(e)}
+            />
+            <TextField
+              name="toDate"
+              label="To Date"
+              type="date"
+              InputLabelProps={{ shrink: true }}
+              value={dates.toDate}
+              onChange={(e) => handleDateChange(e)}
+            />
             <Button
               variant="contained"
               onClick={() => {
-                router.push("/summary");
+                const from = dates.fromDate;
+                const to = dates.toDate;
+                const url = `/summary?from=${encodeURIComponent(
+                  from
+                )}&to=${encodeURIComponent(to)}`;
+                router.push(url);
               }}
             >
               Summary

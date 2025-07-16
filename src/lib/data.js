@@ -11,7 +11,7 @@ export let invoices = [
         unitPrice: 500,
       },
       {
-        itemName: "Hosting (1 year)",
+        itemName: "Hosting",
         quantity: 1,
         unitPrice: 100,
       },
@@ -25,7 +25,7 @@ export let invoices = [
     dueDate: "2025-06-25",
     items: [
       {
-        itemName: "SEO Optimization",
+        itemName: "SEO Package",
         quantity: 1,
         unitPrice: 300,
       },

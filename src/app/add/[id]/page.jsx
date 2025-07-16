@@ -21,6 +21,12 @@ const availableItems = [
   { label: "Website Design", value: "website_design", price: 500 },
   { label: "Hosting", value: "hosting", price: 100 },
   { label: "SEO Package", value: "seo_package", price: 300 },
+  {
+    label: "Mobile App Development",
+    value: "mobile_app_development",
+    price: 1200,
+  },
+  { label: "Consultation", value: "consultation", price: 300 },
 ];
 
 export default function EditFormPage() {
