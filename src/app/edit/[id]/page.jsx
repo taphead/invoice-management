@@ -77,20 +77,42 @@ export default function EditFormPage() {
     name: "items",
   });
 
-  const onSubmit = (data) => {
-    const newInvoices = [...invoices];
+  const onSubmit = async (data) => {
+    let updatedInvoice = {
+      id,
+      customerName: data.name,
+      invoiceDate: data.invoiceDate,
+      dueDate: data.dueDate,
+      items: data.items.map((item) => {
+        const matchedItem = availableItems.find(
+          (opt) => opt.value === item.item
+        );
+        return {
+          itemName: matchedItem?.label || item.item,
+          quantity: item.quantity,
+          unitPrice: matchedItem?.price || 0,
+        };
+      }),
+    };
+    const totalAmount = updatedInvoice.items.reduce((sum, item) => {
+      return sum + item.quantity * item.unitPrice;
+    }, 0);
 
-    // fetch("/api/invoices", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(newInvoice),
-    // })
-    //   .then((res) => res.json())
-    //   .then((res) => console.log("Invoice added:", res))
-    //   .catch((err) => console.error("Failed to add invoice:", err));
+    updatedInvoice.totalAmount = totalAmount;
 
+    const res = await fetch(`/api/invoices/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedInvoice),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to update invoice");
+    }
+
+    const result = await res.json();
     router.push("/");
   };
 
