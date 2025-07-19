@@ -27,11 +27,13 @@ export default function InvoiceTable() {
   const [loading, setLoading] = useState(true);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const [sorted, setSorted] = useState(false);
 
   const [dates, setDates] = useState({
     fromDate: new Date().toISOString().split("T")[0],
     toDate: new Date().toISOString().split("T")[0],
   });
+
   const handleDateChange = (e) => {
     setDates({ ...dates, [e.target.name]: e.target.value });
     console.log(dates);
@@ -43,6 +45,47 @@ export default function InvoiceTable() {
       .then((data) => setInvoices(data))
       .finally(() => setLoading(false));
   }, []);
+
+  const handleSort = (head) => {
+    let newInvoices = [...invoices];
+    if (head === "id") {
+      if (!sorted) {
+        newInvoices.sort((a, b) => b.id.localeCompare(a.id));
+      } else {
+        newInvoices.sort((a, b) => a.id.localeCompare(b.id));
+      }
+    } else if (head === "name") {
+      if (!sorted) {
+        newInvoices.sort((a, b) =>
+          b.customerName.localeCompare(a.customerName)
+        );
+      } else {
+        newInvoices.sort((a, b) =>
+          a.customerName.localeCompare(b.customerName)
+        );
+      }
+    } else if (head === "total") {
+      if (!sorted) {
+        newInvoices.sort((a, b) => b.totalAmount - a.totalAmount);
+      } else {
+        newInvoices.sort((a, b) => a.totalAmount - b.totalAmount);
+      }
+    } else if (head === "inv_date") {
+      if (!sorted) {
+        newInvoices.sort((a, b) => b.invoiceDate.localeCompare(a.invoiceDate));
+      } else {
+        newInvoices.sort((a, b) => a.invoiceDate.localeCompare(b.invoiceDate));
+      }
+    } else if (head === "due_date") {
+      if (!sorted) {
+        newInvoices.sort((a, b) => b.dueDate.localeCompare(a.dueDate));
+      } else {
+        newInvoices.sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+      }
+    }
+    setSorted((sorted) => !sorted);
+    setInvoices(newInvoices);
+  };
 
   const handleAdd = () => {
     let latestId = invoices[invoices.length - 1].id;
@@ -93,7 +136,7 @@ export default function InvoiceTable() {
     router.push(`view/${id}`);
   };
 
-  if (!invoices.length) {
+  if (loading) {
     return <div>Loading....</div>;
   } else
     return (
@@ -102,11 +145,36 @@ export default function InvoiceTable() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Customer Name</TableCell>
-                <TableCell>Invoice Date</TableCell>
-                <TableCell>Due Date</TableCell>
-                <TableCell>Total</TableCell>
+                <TableCell
+                  sx={{ cursor: "pointer" }}
+                  onClick={() => handleSort("id")}
+                >
+                  ID
+                </TableCell>
+                <TableCell
+                  sx={{ cursor: "pointer" }}
+                  onClick={() => handleSort("name")}
+                >
+                  Customer Name
+                </TableCell>
+                <TableCell
+                  sx={{ cursor: "pointer" }}
+                  onClick={() => handleSort("inv_date")}
+                >
+                  Invoice Date
+                </TableCell>
+                <TableCell
+                  sx={{ cursor: "pointer" }}
+                  onClick={() => handleSort("due_date")}
+                >
+                  Due Date
+                </TableCell>
+                <TableCell
+                  sx={{ cursor: "pointer" }}
+                  onClick={() => handleSort("total")}
+                >
+                  Total
+                </TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
