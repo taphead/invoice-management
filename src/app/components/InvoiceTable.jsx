@@ -11,13 +11,13 @@ import {
   TextField,
   Paper,
   Button,
-  Skeleton,
   Box,
 } from "@mui/material";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import PageviewIcon from "@mui/icons-material/Pageview";
+import ConfirmDialog from "./ConfirmDialog";
 
 import { useRouter } from "next/navigation";
 
@@ -25,7 +25,9 @@ export default function InvoiceTable() {
   const router = useRouter();
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [total, setTotal] = useState(0);
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+
   const [dates, setDates] = useState({
     fromDate: new Date().toISOString().split("T")[0],
     toDate: new Date().toISOString().split("T")[0],
@@ -52,6 +54,22 @@ export default function InvoiceTable() {
 
   const handleEdit = (id) => {
     router.push(`edit/${id}`);
+  };
+
+  const handleClickDelete = (id) => {
+    setSelectedId(id);
+    setOpenConfirm(true);
+  };
+
+  const handleConfirmDelete = () => {
+    handleDelete(selectedId);
+    setOpenConfirm(false);
+    setSelectedId(null);
+  };
+
+  const handleCancel = () => {
+    setOpenConfirm(false);
+    setSelectedId(null);
   };
 
   const handleDelete = (id) => {
@@ -112,11 +130,18 @@ export default function InvoiceTable() {
                       </a>
                     </Button>
 
-                    <Button onClick={() => handleDelete(i.id)}>
+                    <Button onClick={() => handleClickDelete(i.id)}>
                       <a>
                         <DeleteIcon />
                       </a>
                     </Button>
+                    <ConfirmDialog
+                      open={openConfirm}
+                      onClose={handleCancel}
+                      onConfirm={handleConfirmDelete}
+                      dialogTitle="Confirm Delete"
+                      dialogText="Are you sure you want to delete this item?"
+                    />
                   </TableCell>
                 </TableRow>
               ))}

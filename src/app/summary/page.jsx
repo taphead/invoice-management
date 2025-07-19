@@ -79,7 +79,7 @@ export default function Summary() {
           <Page style={styles.page}>
             <Text style={styles.heading}>Invoice Summary Report</Text>
             <Text style={styles.subheading}>
-              Date Range: June 1, 2025 - June 30, 2025
+              {from} to {to}
             </Text>
             <View style={styles.tableHeader}>
               <Text style={styles.cell}>Invoice ID</Text>
