@@ -88,7 +88,8 @@ export default function InvoiceTable() {
   };
 
   const handleAdd = () => {
-    let latestId = invoices[invoices.length - 1].id;
+    let sortedInv = [...invoices].sort((a, b) => a.id.localeCompare(b.id));
+    let latestId = sortedInv[sortedInv.length - 1].id;
     let lastDigits = parseInt(latestId.slice(-3));
     let nextId = String(lastDigits + 1).padStart(3, "0");
     let nextIdFull = latestId.slice(0, -3) + nextId;
