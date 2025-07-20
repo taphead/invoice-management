@@ -7,7 +7,7 @@ import {
   Document,
   StyleSheet,
 } from "@react-pdf/renderer";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 const styles = StyleSheet.create({
@@ -74,32 +74,34 @@ export default function Summary() {
   if (loading) return <div>Loading...</div>;
   else
     return (
-      <PDFViewer style={{ width: "100%", height: "100vh" }}>
-        <Document>
-          <Page style={styles.page}>
-            <Text style={styles.heading}>Invoice Summary Report</Text>
-            <Text style={styles.subheading}>
-              {from} to {to}
-            </Text>
-            <View style={styles.tableHeader}>
-              <Text style={styles.cell}>Invoice ID</Text>
-              <Text style={styles.cell}>Customer Name</Text>
-              <Text style={styles.cell}>Invoice Date</Text>
-              <Text style={styles.cell}>Due Date</Text>
-              <Text style={styles.cell}>Total Amount</Text>
-            </View>
-            {invoices.map((inv) => (
-              <View style={styles.row} key={inv.id}>
-                <Text style={styles.cell}>{inv.id}</Text>
-                <Text style={styles.cell}>{inv.customerName}</Text>
-                <Text style={styles.cell}>{inv.invoiceDate}</Text>
-                <Text style={styles.cell}>{inv.dueDate}</Text>
-                <Text style={styles.cell}>${inv.totalAmount}</Text>
+      <Suspense fallback={<div>Loading PDF...</div>}>
+        <PDFViewer style={{ width: "100%", height: "100vh" }}>
+          <Document>
+            <Page style={styles.page}>
+              <Text style={styles.heading}>Invoice Summary Report</Text>
+              <Text style={styles.subheading}>
+                {from} to {to}
+              </Text>
+              <View style={styles.tableHeader}>
+                <Text style={styles.cell}>Invoice ID</Text>
+                <Text style={styles.cell}>Customer Name</Text>
+                <Text style={styles.cell}>Invoice Date</Text>
+                <Text style={styles.cell}>Due Date</Text>
+                <Text style={styles.cell}>Total Amount</Text>
               </View>
-            ))}
-            <Text style={styles.total}>Total Invoiced Amount: ${total}</Text>
-          </Page>
-        </Document>
-      </PDFViewer>
+              {invoices.map((inv) => (
+                <View style={styles.row} key={inv.id}>
+                  <Text style={styles.cell}>{inv.id}</Text>
+                  <Text style={styles.cell}>{inv.customerName}</Text>
+                  <Text style={styles.cell}>{inv.invoiceDate}</Text>
+                  <Text style={styles.cell}>{inv.dueDate}</Text>
+                  <Text style={styles.cell}>${inv.totalAmount}</Text>
+                </View>
+              ))}
+              <Text style={styles.total}>Total Invoiced Amount: ${total}</Text>
+            </Page>
+          </Document>
+        </PDFViewer>
+      </Suspense>
     );
 }
